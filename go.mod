@@ -1,4 +1,4 @@
-module github.com/deislabs/oras
+module github.com/antevens/oras
 
 go 1.13
 
