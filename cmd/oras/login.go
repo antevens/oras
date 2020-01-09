@@ -24,6 +24,7 @@ type loginOptions struct {
 	configs  []string
 	username string
 	password string
+	renegotiate string
 	insecure bool
 }
 
@@ -51,6 +52,9 @@ Example - Login with username and password by prompt:
 
 Example - Login with insecure registry from command line:
   oras login --insecure localhost:5000
+
+Example - Login allowing all TLS renegotiation with registry during login:
+  oras login -r RenegotiateFreelyAsClient localhost:5000
 `,
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -63,6 +67,7 @@ Example - Login with insecure registry from command line:
 	cmd.Flags().StringArrayVarP(&opts.configs, "config", "c", nil, "auth config path")
 	cmd.Flags().StringVarP(&opts.username, "username", "u", "", "registry username")
 	cmd.Flags().StringVarP(&opts.password, "password", "p", "", "registry password or identity token")
+	cmd.Flags().StringVarP(&opts.renegotiate, "renegotiate", "r", "", "TLS renegotiation strategy")
 	cmd.Flags().BoolVarP(&opts.fromStdin, "password-stdin", "", false, "read password or identity token from stdin")
 	cmd.Flags().BoolVarP(&opts.insecure, "insecure", "k", false, "allow connections to SSL registry without certs")
 	return cmd
@@ -113,7 +118,7 @@ func runLogin(opts loginOptions) error {
 	}
 
 	// Login
-	if err := cli.Login(context.Background(), opts.hostname, opts.username, opts.password, opts.insecure); err != nil {
+	if err := cli.Login(context.Background(), opts.hostname, opts.username, opts.password, opts.renegotiate, opts.insecure); err != nil {
 		return err
 	}
 

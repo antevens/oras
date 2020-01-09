@@ -17,7 +17,7 @@ type Client struct {
 }
 
 // NewClient creates a new auth client based on provided config paths.
-// If not config path is provided, the default path is used.
+// If config path is not provided, the default path is used.
 // Credentials are read from the first config and fall backs to next.
 // All changes will only be written to the first config file.
 func NewClient(configPaths ...string) (auth.Client, error) {

@@ -9,7 +9,7 @@ import (
 )
 
 // Login logs in to a docker registry identified by the hostname.
-func (c *Client) Login(ctx context.Context, hostname, username, secret string, insecure bool) error {
+func (c *Client) Login(ctx context.Context, hostname, username, secret string, renegotiate string, insecure bool) error {
 	hostname = resolveHostname(hostname)
 	cred := types.AuthConfig{
 		Username:      username,

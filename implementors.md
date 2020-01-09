@@ -64,6 +64,18 @@ To remove the entry from the credentials file, use `oras logout`:
 oras logout localhost:5000
 ```
 
+### Allowing TLS Renegotiation
+
+Allow all TLS renegotiation with registry during login:
+
+RenegotiateNever disables renegotiation.
+RenegotiateOnceAsClient allows a remote server to request renegotiation once per connection.
+RenegotiateFreelyAsClient allows a remote server to repeatedly request renegotiation.
+
+```sh
+  oras login -r RenegotiateFreelyAsClient localhost:5000
+```
+
 ### Using an Insecure Docker Registry
 
 To login to the registry without a certificate, a self-signed certificate, or an unencrypted HTTP connection Docker registry, `oras` supports the `--insecure` flag.
@@ -73,9 +85,9 @@ To login to the registry without a certificate, a self-signed certificate, or an
   ```sh
   htpasswd -cB -b auth.htpasswd myuser mypass
   ```
-  
+
 - Generate your self-signed certificates:
-  
+
   ```sh
   $ mkdir -p certs
   $ openssl req \

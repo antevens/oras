@@ -35,6 +35,7 @@ type pushOptions struct {
 	configs   []string
 	username  string
 	password  string
+	renegotiate  string
 	insecure  bool
 	plainHTTP bool
 }
@@ -61,6 +62,9 @@ Example - Push file "hi.txt" with the custom manifest config "config.json" of th
 Example - Push file to the insecure registry:
   oras push localhost:5000/hello:latest hi.txt --insecure
 
+Example - Push file to the insecure registry:
+  oras push localhost:5000/hello:latest hi.txt --renegotiate RenegotiateFreelyAsClient
+
 Example - Push file to the HTTP registry:
   oras push localhost:5000/hello:latest hi.txt --plain-http
 `,
@@ -80,6 +84,7 @@ Example - Push file to the HTTP registry:
 	cmd.Flags().StringArrayVarP(&opts.configs, "config", "c", nil, "auth config path")
 	cmd.Flags().StringVarP(&opts.username, "username", "u", "", "registry username")
 	cmd.Flags().StringVarP(&opts.password, "password", "p", "", "registry password")
+	cmd.Flags().StringVarP(&opts.renegotiate, "renegotiate", "r", "", "TLS renegotiation strategy")
 	cmd.Flags().BoolVarP(&opts.insecure, "insecure", "", false, "allow connections to SSL registry without certs")
 	cmd.Flags().BoolVarP(&opts.plainHTTP, "plain-http", "", false, "use plain http and not https")
 	return cmd
@@ -129,7 +134,7 @@ func runPush(opts pushOptions) error {
 	}
 
 	// ready to push
-	resolver := newResolver(opts.username, opts.password, opts.insecure, opts.plainHTTP, opts.configs...)
+	resolver := newResolver(opts.username, opts.password, opts.renegotiate, opts.insecure, opts.plainHTTP, opts.configs...)
 	pushOpts = append(pushOpts, oras.WithPushBaseHandler(pushStatusTrack()))
 	desc, err := oras.Push(ctx, resolver, opts.targetRef, store, files, pushOpts...)
 	if err != nil {
